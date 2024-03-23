@@ -1,0 +1,1 @@
+# another-cookie-clicker-bot
