@@ -19,22 +19,27 @@ def game_setup():
         time.sleep(1)
     driver.find_element(By.ID, "langSelect-EN").click()
     time.sleep(3)
-    
+
     driver.find_element(By.CLASS_NAME, "cc_btn.cc_btn_accept_all").click()
 
-game_setup()
 
 def class_list_clicker(driver, class_name):
     class_list = driver.find_elements(By.CLASS_NAME, class_name)
     for upgrade in class_list:
         upgrade.click()
 
+def is_there_something_to_buy(driver):
+    return len(driver.find_elements(By.CLASS_NAME, "product.enabled")) > 0 or len(driver.find_elements(By.CLASS_NAME, "upgrade.enabled")) > 0
+
+game_setup()
+
 # Game Loop
 while True:
-    click_on_cookie(5) #TODO: Improve this so it stops only when there is something to do
+    while(is_there_something_to_buy(driver) == False):
+        click_on_cookie(10)
 
-    class_list_clicker(driver, "upgrade.enabled") # Buy any upgrades that are available (cheap ones first)
-    class_list_clicker(driver, "product.enabled") # Buy any products that are available (cheap ones first)
+    class_list_clicker(driver, "upgrade.enabled") # Buy any upgrades that are available
+    class_list_clicker(driver, "product.enabled") # Buy any products that are available
  
     cookies_amount = driver.find_element(By.ID, "cookies").text.split()[0]
     print("Number of cookies:", cookies_amount)
