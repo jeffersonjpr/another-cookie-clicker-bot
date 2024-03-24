@@ -19,27 +19,26 @@ def game_setup():
         time.sleep(1)
     driver.find_element(By.ID, "langSelect-EN").click()
     time.sleep(3)
+    
+    driver.find_element(By.CLASS_NAME, "cc_btn.cc_btn_accept_all").click()
 
 game_setup()
 
+def class_list_clicker(driver, class_name):
+    class_list = driver.find_elements(By.CLASS_NAME, class_name)
+    for upgrade in class_list:
+        upgrade.click()
+
 # Game Loop
 while True:
-    click_on_cookie(5)
+    click_on_cookie(5) #TODO: Improve this so it stops only when there is something to do
 
-    #TODO: buy_available_upgrades()
+    class_list_clicker(driver, "upgrade.enabled") # Buy any upgrades that are available (cheap ones first)
+    class_list_clicker(driver, "product.enabled") # Buy any products that are available (cheap ones first)
+ 
+    cookies_amount = driver.find_element(By.ID, "cookies").text.split()[0]
+    print("Number of cookies:", cookies_amount)
 
-    #TODO: Add a smart way to find buildings enabled to buy
-    cursor = driver.find_element(By.ID, "product0")
-    cursor.click()
-
-    grandma = driver.find_element(By.ID, "product1")
-    grandma.click()
-
-    # farm = driver.find_element(By.ID, "product2")
-    # farm.click()
-
-
-
-# Kill switch
+    # Kill switch
     if keyboard.is_pressed("q"):
         break
