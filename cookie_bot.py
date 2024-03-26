@@ -24,8 +24,12 @@ class CookieBot:
         self.driver.find_element(
             By.CLASS_NAME, "cc_btn.cc_btn_accept_all").click()
 
-    def __class_list_clicker(self, class_name: str):
+    def __class_list_clicker(self, class_name: str, invert=False):
         class_list = self.driver.find_elements(By.CLASS_NAME, class_name)
+
+        if invert:
+            class_list = class_list[::-1]
+
         for upgrade in class_list:
             upgrade.click()
 
@@ -41,7 +45,7 @@ class CookieBot:
         self.__class_list_clicker("upgrade.enabled")
 
     def buy_available_products(self):
-        self.__class_list_clicker("product.enabled")
+        self.__class_list_clicker("product.enabled", invert=True)
 
     def save_game(self, file_name="cookie_save.txt"):
         self.__click_options_button()
