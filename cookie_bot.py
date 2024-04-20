@@ -2,27 +2,31 @@ import time
 from selenium import webdriver
 from selenium.webdriver import *
 from selenium.webdriver.common.by import By
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class CookieBot:
     def __init__(self, driver: webdriver):
         self.driver = driver
         self.cookie_amount = 0
 
+        self.__big_cookie = None
+
+    def __get_big_cookie(self):
+        if self.__big_cookie == None:
+            self.__big_cookie = self.driver.find_element(By.ID, "bigCookie")
+        return self.__big_cookie
+
     def click_on_cookie(self, num: int):
-        Big_cookie = self.driver.find_element(By.ID, "bigCookie")
         for i in range(num):
-            Big_cookie.click()
+            self.__get_big_cookie().click()
 
     def game_setup(self):
-        time.sleep(3)
-        while (self.driver.find_element(By.ID, "langSelect-EN").is_displayed() == False):
-            time.sleep(1)
-        self.driver.find_element(By.ID, "langSelect-EN").click()
-        time.sleep(3)
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "langSelect-EN"))).click()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "cc_btn.cc_btn_accept_all")))
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "cc_btn.cc_btn_accept_all"))).click()
+        self.__big_cookie = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "bigCookie")))
 
-        self.driver.find_element(
-            By.CLASS_NAME, "cc_btn.cc_btn_accept_all").click()
 
     def __class_list_clicker(self, class_name: str, invert=False):
         class_list = self.driver.find_elements(By.CLASS_NAME, class_name)
